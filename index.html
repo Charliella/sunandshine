@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f0e6">
+  <title>上石・人物誌與追光計畫</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f0e6;
+      --surface: #fffdf8;
+      --ink: #302b25;
+      --muted: #625a50;
+      --accent: #8c412e;
+      --accent-light: #f4e4d9;
+      --green: #475940;
+      --green-light: #eaf0e5;
+      --line: #e0d5c6;
+      --radius: 12px;
+      --shadow: 0 12px 32px #4a352812;
+      --serif: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 1rem/1.65 system-ui, "Microsoft JhengHei", sans-serif;
+    }
+
+    button { font: inherit; color: inherit; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    .wrap {
+      width: min(100% - 2rem, 72rem);
+      margin-inline: auto;
+    }
+
+    .site-header {
+      background: linear-gradient(115deg, #fbf6ee 22%, #e8ebdd);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .masthead { padding-block: clamp(2.25rem, 6vw, 5rem) 1.65rem; }
+    .masthead h1, .section-heading h2, .entry h3 {
+      margin: 0;
+      font-family: var(--serif);
+      line-height: 1.35;
+    }
+
+    .masthead h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+    .masthead p { margin: 0.6rem 0 0; color: var(--muted); }
+
+    .tabs { display: flex; flex-wrap: wrap; gap: 0.25rem 1.2rem; }
+    .tab {
+      padding: 0.75rem 0.25rem;
+      border: 0;
+      border-bottom: 3px solid transparent;
+      background: none;
+      color: var(--muted);
+      text-align: left;
+      cursor: pointer;
+    }
+    .tab:hover, .tab[aria-selected="true"] { color: var(--accent); }
+    .tab[aria-selected="true"] { border-bottom-color: var(--accent); font-weight: 700; }
+
+    main { padding-block: 2rem 3.5rem; }
+    .panel + .panel { margin-top: 2.5rem; }
+    .panel[hidden] + .panel { margin-top: 0; }
+    .section-heading { margin-bottom: 1.25rem; }
+    .section-heading h2 { font-size: clamp(1.55rem, 3vw, 2.15rem); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr);
+      grid-template-areas: "side content";
+      align-items: start;
+      gap: 1.25rem;
+    }
+
+    .sidebar {
+      grid-area: side;
+      position: sticky;
+      top: 1rem;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    .sidebar h3 { margin: 0; font-size: 1rem; }
+    .entries { grid-area: content; display: grid; gap: 1rem; }
+    .entries > article { min-width: 0; }
+    .entries:has(> article) > .empty { display: none; }
+    .empty { margin: 0; padding: 1rem; color: var(--muted); border: 1px dashed var(--line); }
+
+    .directory {
+      display: grid;
+      gap: 0.3rem;
+      max-height: min(55vh, 30rem);
+      overflow: auto;
+      padding: 0.25rem;
+      margin: 0.55rem -0.25rem -0.25rem;
+    }
+    .article-choice {
+      padding: 0.55rem 0.65rem;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .article-choice:hover, .article-choice[aria-pressed="true"] {
+      background: var(--accent-light);
+      border-color: #e5c7b5;
+      color: var(--accent);
+    }
+
+    .entry {
+      padding: clamp(1.15rem, 4vw, 3.1rem);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 3px solid #aa6148;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow-wrap: anywhere;
+    }
+    .entry h3 { font-size: clamp(1.6rem, 3.5vw, 2.6rem); scroll-margin-top: 1rem; }
+    .byline { margin: 0.55rem 0 0; font-size: 0.875rem; color: var(--muted); }
+    .byline time { white-space: nowrap; }
+    .byline time::before { content: "・"; margin-inline: 0.2rem; }
+
+    .article-body {
+      display: flow-root;
+      max-width: 42rem;
+      margin-top: 1.3rem;
+      padding-top: 1.1rem;
+      border-top: 1px solid var(--line);
+      font-size: 1.06rem;
+      line-height: 1.95;
+    }
+    .article-body p { margin: 0 0 0.95em; }
+    .article-body p:last-child { margin-bottom: 0; }
+    .article-body img { display: block; max-width: 100%; height: auto; }
+    .article-body a { color: var(--accent); }
+
+    .story-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+    .story-grid .empty { grid-column: 1 / -1; }
+    .story { border-top-color: #73846c; padding: clamp(1rem, 2.55vw, 1.6rem); }
+    .story h3 { font-size: clamp(1.27rem, 2vw, 1.6rem); }
+    .story .article-body { font-size: 1rem; }
+
+    .roster-progress { margin: 0.55rem 0 0.85rem; color: var(--green); }
+    .roster-progress p { margin: 0 0 0.35rem; font-size: 0.875rem; }
+    .roster-progress progress { display: block; width: 100%; accent-color: var(--green); }
+    .roster-list {
+      max-height: min(53vh, 25rem);
+      overflow: auto;
+      scrollbar-color: #b2a595 transparent;
+      padding-right: 0.25rem;
+    }
+    .people { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.25rem; }
+    .person label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 0;
+      padding: 0.35rem 0.45rem;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      overflow-wrap: anywhere;
+    }
+    .person:has(input:checked) label { background: var(--green-light); color: var(--green); font-weight: 700; }
+    .person input { flex: none; width: 1rem; height: 1rem; margin: 0; }
+
+    @media (max-width: 64rem) {
+      .story-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    @media (max-width: 44rem) {
+      .layout { grid-template-columns: minmax(0, 1fr); }
+      .profile-layout { grid-template-areas: "side" "content"; }
+      .story-layout { grid-template-areas: "content" "side"; }
+      .sidebar { position: static; }
+      .directory { max-height: 12rem; }
+      .roster-list { max-height: 16rem; }
+      .people { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap masthead">
+      <h1>上石的日常，值得被好好記得</h1>
+      <p>在每一段相遇裡，看見陪伴、成長與溫柔的光。</p>
+    </div>
+    <div class="wrap tabs" role="tablist" aria-label="網站分頁" hidden>
+      <button class="tab" type="button" id="tab-a" role="tab" aria-controls="panel-a" aria-selected="true">上石石尚人物誌</button>
+      <button class="tab" type="button" id="tab-b" role="tab" aria-controls="panel-b" aria-selected="false" tabindex="-1">追光計畫，上石好「棒」</button>
+    </div>
+  </header>
+
+  <!--
+    用文字編輯器開啟本檔，再用 Ctrl+F 尋找以下區塊。
+    新增人物誌：搜尋【編輯區 1】。
+    新增追光故事：搜尋【編輯區 2】。
+    追光檢核及新增老師：搜尋【編輯區 3】。
+  -->
+  <main class="wrap">
+    <section class="panel" id="panel-a" aria-labelledby="profile-heading">
+      <header class="section-heading">
+        <h2 id="profile-heading">上石石尚人物誌</h2>
+      </header>
+      <div class="layout profile-layout">
+        <aside class="sidebar" id="profile-directory" hidden>
+          <h3>文章目錄</h3>
+          <div class="directory" id="a-list"></div>
+        </aside>
+
+        <div class="entries" id="profiles">
+          <!-- 【編輯區 1】複製一整段 article 到這一行下方，改標題、署名、日期（YYYY-MM-DD）和內文。每一段用一組 <p>…</p>，目錄會自動更新。 -->
+          <article class="entry">
+            <h3>把日子慢慢種成喜歡的樣子</h3>
+            <p class="byline">示範老師一 <time>2026-11-18</time></p>
+            <div class="article-body">
+              <p>有些事情不必急著開花。</p>
+              <p>每天替窗邊的植物澆一點水，替孩子多留一點等待的時間，也替自己留一張可以慢慢坐下來的椅子。</p>
+              <p>教育像一座小小的花園，我們做的，是陪伴每一種不同的生命，找到適合自己的光。</p>
+            </div>
+          </article>
+
+          <article class="entry">
+            <h3>在教室裡，收藏一點點光</h3>
+            <p class="byline">示範老師二 <time>2026-11-12</time></p>
+            <div class="article-body">
+              <p>每天走進教室，都會遇見新的風景。</p>
+              <p>可能是一句忽然說出口的勇敢，也可能是孩子把手伸向同伴的那一刻。那些細小的片段，像午後落在桌面的陽光，安靜地提醒我：我們正在一起長大。</p>
+            </div>
+          </article>
+
+          <article class="entry">
+            <h3>測試用文章</h3>
+            <p class="byline">示範老師三 <time>2026-11-12</time></p>
+            <div class="article-body">
+              <p>每天走進教室，都會遇見新的風景。</p>
+              <p>可能是一句忽然說出口的勇敢，也可能是孩子把手伸向同伴的那一刻。那些細小的片段，像午後落在桌面的陽光，安靜地提醒我：我們正在一起長大。</p>
+            </div>
+          </article>
+          <p class="empty">目前還沒有人物誌文章。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-b" aria-labelledby="story-heading">
+      <header class="section-heading">
+        <h2 id="story-heading">追光計畫，上石好「棒」</h2>
+      </header>
+      <div class="layout story-layout">
+        <div class="entries story-grid" id="stories">
+          <!-- 【編輯區 2】複製一整段 article 到這一行下方，改標題、署名、日期（YYYY-MM-DD）和內文。每一段用一組 <p>…</p>，故事依檔案順序顯示。 -->
+          <article class="entry story">
+            <h3>追光計劃，上石好棒</h3>
+            <p class="byline">追光者靖宜 <time>2026-11-18</time></p>
+            <div class="article-body">
+              <p>追光計畫<br>
+                在上石，我看見一道光～～</p>
+              <p>@炎鈴 Anne</p>
+              <p>炎鈴老師的日常總是有忙不完的瑣事，但她永遠能用最燦爛的笑容面對孩子與同事。謝謝妳總是把溫暖帶給身邊的每一位，能跟妳當同事真的很幸福！</p>
+            </div>
+          </article>
+
+ <article class="entry story">
+            <h3>追光計劃，上石好棒</h3>
+            <p class="byline">追光者炎鈴 <time>2026-11-18</time></p>
+            <div class="article-body">
+              <p>追光計畫<br>
+                在上石，我看見一道光～～</p>
+              <p>@炎鈴 Anne</p>
+              <p>💕謝謝靖宜兒的「哦嘍」我沒這麼笑容燦爛啦，有時候也會被小孩弄到爆炸（尤其是當導師的時候😅）；我要來tag瑟玫💕一年級的導師實在是太強大了（每個一年級的老師都是，但只能選一個啊）我曾經看過瑟玫老師握著孩子的手一筆一畫學寫字，甚至她腳受傷了，依然還是心繫著班上還是來上班，孩子們也能夠很快地排好隊自己主動到英語教室上課，能把自己管理得很好，在科任教室上課的時候，我也看到副班長登記秩序不佳的孩子，這些都是默默做的，但我都看在心裡，上石有您真好
+@游瑟玫</p>
+            </div>
+          </article>
+
+
+          <article class="entry story">
+            <h3>追光計畫，上石好棒</h3>
+            <p class="byline">追光者郁文 <time>2026-11-09</time></p>
+            <div class="article-body">
+              <p>感謝~~其實還有很多夥伴一起合力協助上學焦慮的孩子們，有大家一起真好！！(hearts)</p>
+              <p>我來接棒囉～～<br>
+                下一位是～同樣常常陪孩子們走進教室的<br>
+                @舜蓉 (sweet)</p>
+              <p>每次相遇，總能聽見舜蓉親切的問候！記得有幾次和舜蓉一起陪孩子聊聊天、看看天空看看魚，那份暖暖的笑容，讓人感受到被關心與照顧著的幸福！</p>
+              <p>平時在校園裡，無論走到哪，經常能看見舜蓉用心付出的身影，不僅細心照料校園的每個角落、熱心協助處理大小事，更用溫暖的心，關懷著身邊的每一個人。</p>
+              <p>每一個需要支援與陪伴的時刻，謝謝有您默默點亮守護的光芒，成為大家最安心的依靠(raising hands)</p>
+            </div>
+          </article>
+
+          <article class="entry story">
+            <h3>追光計劃，上石好棒</h3>
+            <p class="byline">追光者怡如 <time>2026-11-15</time></p>
+            <div class="article-body">
+              <p>@王郁文<br>
+                追光計畫<br>
+                在上石，我看見一道光~~郁文<br>
+                彎低的身子、平視的眼神，是你對眼前這哭泣孩子深深的包容與支持。</p>
+              <p>成為上石學生是幸福的，在上學的焦慮中能被郁文溫柔地接住，細細撫平心中的不安，找到自己走進教室的勇氣。</p>
+              <p>這畫面融合成一道暖黃色的光芒，在早晨溫暖著我。<br>
+                追光者 怡如</p>
+            </div>
+          </article>
+
+          <article class="entry story">
+            <h3>追光計畫，上石好棒</h3>
+            <p class="byline">追光者舜蓉 <time>2026-11-09</time></p>
+            <div class="article-body">
+              <p>謝謝暖心的郁文老師❤️真的非常幸運在上石遇見了最強戰力的團隊夥伴，一起面對、參與各式各樣的活動任務，從中學習，克服困難，累積許多珍貴的實務經驗，在彼此支持、協助的合作關係中，凝聚成為堅定信任的溫暖能量✨</p>
+              <p>追光計畫<br>
+                在上石，我看見一道光～～</p>
+              <p>@張靖宜<br>
+                清晨寧靜的校園，靖宜總是最早抵達的人，開啓了辦公室第一盞燈光💡接著打開窗戶，讓清新的空氣流動🌿為即將展開的一天，默默進行各項活動前置作業和相關準備。</p>
+              <p>看似理所當然又普通的學校生活日常，其實每天都充滿許多挑戰和考驗，靖宜總是能處變不驚，機智解決各項疑難問題，提供最適當、有效的解決方式。</p>
+              <p>在上石工作的每一天，相信都能感受靖宜強大穩定的氣場能量，貼心照顧我們每個人的各種需求，同時給與滿滿的情緒價值❤️成為我在上石開心、快樂工作的最強後盾💪</p>
+            </div>
+          </article>
+          <p class="empty">目前還沒有追光故事。</p>
+        </div>
+
+        <aside class="sidebar">
+          <h3>上石老師追光檢核</h3>
+          <div class="roster-progress" id="roster-progress" hidden>
+            <p id="roster-count"></p>
+            <progress id="roster-meter" value="0" max="1" aria-labelledby="roster-count"></progress>
+          </div>
+          <div class="roster-list" tabindex="0" role="region" aria-label="老師名單">
+            <ul class="people" id="people">
+              <!-- 【編輯區 3】新增老師就複製一整行 li，改最後的姓名。加入 checked 表示完成，移除 checked 表示待完成。 -->
+              <li class="person"><label><input type="checkbox" disabled> 世舫</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 介鈞</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 佳佳佳芹</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 凱 Oscar</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 劉信志</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 劉宜欣</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 吳小狼</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 周素萍</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 培慈</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 孟潔</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 宛宛</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 宣伶</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 帆</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 延勳</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 張明富</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 張曉芳</label></li>
+              <li class="person"><label><input type="checkbox" disabled checked> 張靖宜</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 徐瑱慧</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 徐紹章(larry)</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 怡芳Vivian</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 惠雯</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 慈心學園王怡雯</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 敏華(=^!^=) 小兔兒</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 李小印</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 林怡如</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 林湘穎</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 林綵紋</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 林錦麟</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 楊瑞蘭</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 欣蕙</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 江敏滋</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 洪美美</label></li>
+              <li class="person"><label><input type="checkbox" disabled checked> 游瑟枚</label></li>
+              <li class="person"><label><input type="checkbox" disabled checked> 炎鈴 Anne</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 王嘉禧</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 嘉威</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 王書漢</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 王翠津</label></li>
+              <li class="person"><label><input type="checkbox" disabled checked> 王郁文</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 王麗君</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 璟</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 百瑩</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 秀芳</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 秭訢 Juliet</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 筱晴</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 美媛</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 美珍(Maggie Wang)</label></li>
+              <li class="person"><label><input type="checkbox" disabled checked> 舜蓉</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 芬婷</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 莊雅景</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 蘇靖媚</label></li>
+              <li class="person"><label><input type="checkbox" disabled> pinksayun</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 軒～</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 陳富美</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 陳衍儒</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 靖</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 靖雯</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 黃佳如</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 黃柏菁</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 黃米血(暐茹)</label></li>
+              <li class="person"><label><input type="checkbox" disabled> apple</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Aprilfool.tw</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Ariel 余璨同</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Ben 倍傑</label></li>
+              <li class="person"><label><input type="checkbox" disabled> canon1119</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Chiao-Feng 喬楓</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Daisy Huang</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Debby</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Eating孟揚</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Hsinmei～枚</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Iris</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Iris Hsu妙鴻</label></li>
+              <li class="person"><label><input type="checkbox" disabled> JadeYang</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Lulu</label></li>
+              <li class="person"><label><input type="checkbox" disabled> MaggieLin</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Michelle</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Ming Yuen Ko 柯</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Min-Chun Tsai 旻均</label></li>
+              <li class="person"><label><input type="checkbox" disabled> PING</label></li>
+              <li class="person"><label><input type="checkbox" disabled> rehung</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Shannon Yeow</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Shuchen Hsu</label></li>
+              <li class="person"><label><input type="checkbox" disabled> tsu khi</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Vivi</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Weiying</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Woody 吳曜崴</label></li>
+              <li class="person"><label><input type="checkbox" disabled> ㄚ美</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Yaping</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Yen Ning</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Yuchu Chang</label></li>
+              <li class="person"><label><input type="checkbox" disabled> zerox peng</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Zora wu</label></li>
+              <li class="person"><label><input type="checkbox" disabled> 俊仔</label></li>
+              <li class="person"><label><input type="checkbox" disabled> Bella 香君</label></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const tabList = document.querySelector('[role="tablist"]');
+    const tabs = [...tabList.querySelectorAll('[role="tab"]')];
+
+    function selectTab(selectedTab) {
+      for (const tab of tabs) {
+        const active = tab === selectedTab;
+        const panel = document.getElementById(tab.getAttribute("aria-controls"));
+        tab.setAttribute("aria-selected", String(active));
+        tab.tabIndex = active ? 0 : -1;
+        panel.hidden = !active;
+      }
+    }
+
+    for (const tab of tabs) {
+      const panel = document.getElementById(tab.getAttribute("aria-controls"));
+      panel.setAttribute("role", "tabpanel");
+      panel.setAttribute("aria-labelledby", tab.id);
+      panel.tabIndex = 0;
+      tab.addEventListener("click", () => selectTab(tab));
+
+      tab.addEventListener("keydown", event => {
+        const index = tabs.indexOf(tab);
+        let nextIndex;
+        switch (event.key) {
+          case "ArrowRight": nextIndex = (index + 1) % tabs.length; break;
+          case "ArrowLeft": nextIndex = (index + tabs.length - 1) % tabs.length; break;
+          case "Home": nextIndex = 0; break;
+          case "End": nextIndex = tabs.length - 1; break;
+          default: return;
+        }
+        event.preventDefault();
+        selectTab(tabs[nextIndex]);
+        tabs[nextIndex].focus();
+      });
+    }
+
+    const profiles = [...document.querySelectorAll("#profiles > article")];
+    const directory = document.getElementById("a-list");
+    const choices = profiles.map(profile => {
+      const heading = profile.querySelector("h3");
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "article-choice";
+      button.textContent = heading.textContent.trim();
+      heading.tabIndex = -1;
+      button.addEventListener("click", () => {
+        selectProfile(profile);
+        heading.focus({ preventScroll: true });
+        heading.scrollIntoView({ block: "nearest" });
+      });
+      return button;
+    });
+
+    function selectProfile(selectedProfile) {
+      profiles.forEach((profile, index) => {
+        const active = profile === selectedProfile;
+        profile.hidden = !active;
+        choices[index].setAttribute("aria-pressed", String(active));
+      });
+    }
+
+    if (profiles.length > 0) {
+      directory.append(...choices);
+      selectProfile(profiles[0]);
+      document.getElementById("profile-directory").hidden = false;
+    }
+
+    const checkboxes = [...document.querySelectorAll('#people input[type="checkbox"]')];
+    const completedCount = checkboxes.filter(checkbox => checkbox.checked).length;
+    if (checkboxes.length > 0) {
+      const meter = document.getElementById("roster-meter");
+      meter.max = checkboxes.length;
+      meter.value = completedCount;
+      document.getElementById("roster-count").textContent =
+        "已完成 " + completedCount + "／" + checkboxes.length + " 位";
+      document.getElementById("roster-progress").hidden = false;
+    }
+
+    selectTab(tabs[0]);
+    tabList.hidden = false;
+  </script>
+</body>
+</html>
+
