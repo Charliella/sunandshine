@@ -27,7 +27,7 @@
 
     body {
       margin: 0;
-      background: var(--paper);
+      background: radial-gradient(ellipse at 100% 12%, #e9ebdc, transparent 38rem), var(--paper);
       color: var(--ink);
       font: 1rem/1.65 system-ui, "Microsoft JhengHei", sans-serif;
     }
@@ -41,7 +41,7 @@
     }
 
     .site-header {
-      background: linear-gradient(115deg, #fbf6ee 22%, #e8ebdd);
+      background: linear-gradient(115deg, #fcf6ea 12%, #f1e3d9 52%, #e2e9da);
       border-bottom: 1px solid var(--line);
     }
 
@@ -148,11 +148,147 @@
     .article-body img { display: block; max-width: 100%; height: auto; }
     .article-body a { color: var(--accent); }
 
-    .story-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+
+    .profile-heading-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: start;
+      justify-content: space-between;
+      gap: 0.65rem 1rem;
+    }
+
+    .projection-launch, .projection-return {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      min-height: 2.75rem;
+      padding: 0.45rem 0.9rem;
+      border: 1px solid #bd8771;
+      border-radius: 6px;
+      background: #f7e8de;
+      color: #733622;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .projection-launch:hover, .projection-return:hover { background: #efd3c1; }
+
+    html:has(.projection[open]) { overflow: hidden; }
+    .projection {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+      margin: 0;
+      padding: clamp(0.55rem, 2.45vmin, 2rem);
+      overflow: hidden;
+      border: 0;
+      background: #26372e;
+      color: #fff7e7;
+      color-scheme: light;
+    }
+    .projection[open] {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: clamp(0.4rem, 1.7vmin, 1.25rem);
+    }
+    .projection-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      padding-inline: 0.15rem;
+    }
+    .projection-label { font-weight: 700; }
+    .projection-return:focus-visible { outline-color: #fff7e7; }
+    .projection-stage {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      align-content: safe center;
+      overflow: hidden;
+      padding: clamp(0.6rem, 3.5vmin, 2.5rem);
+      border: 1px solid #dbc694;
+      border-radius: var(--radius);
+      background: #fffbef;
+      color: #1c211e;
+    }
+    .projection-content {
+      min-width: 0;
+      display: flow-root;
+      font-size: var(--projection-size, 1rem);
+      font-weight: 500;
+      line-height: 1.42;
+      overflow-wrap: anywhere;
+    }
+    .projection-content h3 {
+      margin: 0;
+      color: #293c2e;
+      font: 750 1.47em/1.15 system-ui, "Microsoft JhengHei", sans-serif;
+    }
+    .projection-content .byline { margin: 0.36em 0 0; font-size: 0.62em; color: #5c4639; }
+    .projection-content .article-body {
+      max-width: none;
+      margin-top: 0.45em;
+      padding-top: 0.38em;
+      border-color: #cbb38f;
+      font-size: inherit;
+      line-height: inherit;
+    }
+    .projection-content .article-body p { margin-bottom: 0.36em; }
+    .projection-content .article-body p:last-child { margin-bottom: 0; }
+    .projection-content .article-body img, .projection-content .article-body video {
+      max-width: 100%;
+      max-height: 7em;
+      object-fit: contain;
+    }
+
+    .story-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: start; gap: 1.25rem; }
     .story-grid .empty { grid-column: 1 / -1; }
-    .story { border-top-color: #73846c; padding: clamp(1rem, 2.55vw, 1.6rem); }
-    .story h3 { font-size: clamp(1.27rem, 2vw, 1.6rem); }
-    .story .article-body { font-size: 1rem; }
+    .story {
+      --card-paper: #fff4eb;
+      --card-ink: #793c29;
+      --card-line: #d8ac98;
+      --card-wash: #efd0bb;
+      grid-column: span 7;
+      padding: clamp(1.1rem, 2.55vw, 1.8rem);
+      border-color: var(--card-line);
+      border-top: 4px solid var(--card-ink);
+      background:
+        radial-gradient(ellipse 9rem 7rem at 100% 0%, var(--card-wash), transparent 95%),
+        var(--card-paper);
+    }
+    .story:nth-of-type(4n + 2) {
+      --card-paper: #f0f5ea;
+      --card-ink: #3e5738;
+      --card-line: #b5c4a8;
+      --card-wash: #d8e5cb;
+      grid-column: span 5;
+      margin-top: 2rem;
+    }
+    .story:nth-of-type(4n + 3) {
+      --card-paper: #f4f0f8;
+      --card-ink: #54456b;
+      --card-line: #c5b9d4;
+      --card-wash: #ded4ec;
+      grid-column: span 5;
+      margin-top: 1.25rem;
+    }
+    .story:nth-of-type(4n + 4) {
+      --card-paper: #fff7df;
+      --card-ink: #634913;
+      --card-line: #dac38a;
+      --card-wash: #f0dfae;
+    }
+    .story h3 { color: var(--card-ink); font-size: clamp(1.27rem, 2vw, 1.6rem); }
+    .story .byline { color: var(--card-ink); }
+    .story .article-body { font-size: 1rem; border-color: var(--card-line); }
+    .story .article-body a { color: var(--card-ink); }
+    .story-layout .sidebar { border-top: 3px solid #708368; }
 
     .roster-progress { margin: 0.55rem 0 0.85rem; color: var(--green); }
     .roster-progress p { margin: 0 0 0.35rem; font-size: 0.875rem; }
@@ -179,6 +315,12 @@
 
     @media (max-width: 64rem) {
       .story-grid { grid-template-columns: minmax(0, 1fr); }
+      .story-grid > .story:nth-of-type(n) { grid-column: auto; margin-top: 0; }
+    }
+
+    @media (min-width: 28rem) and (max-width: 44rem) {
+      .story-grid > .story:nth-of-type(2n) { margin-inline-start: 1rem; }
+      .story-grid > .story:nth-of-type(2n + 1) { margin-inline-end: 1rem; }
     }
 
     @media (max-width: 44rem) {
@@ -224,30 +366,40 @@
         <div class="entries" id="profiles">
           <!-- 【編輯區 1】複製一整段 article 到這一行下方，改標題、署名、日期（YYYY-MM-DD）和內文。每一段用一組 <p>…</p>，目錄會自動更新。 -->
           <article class="entry">
-            <h3>把日子慢慢種成喜歡的樣子</h3>
-            <p class="byline">示範老師一 <time>2026-11-18</time></p>
+            <h3>「我會讓你體會進球的快樂」</h3>
+            <p class="byline">嘉威 <time>2026-11-18</time></p>
             <div class="article-body">
-              <p>有些事情不必急著開花。</p>
-              <p>每天替窗邊的植物澆一點水，替孩子多留一點等待的時間，也替自己留一張可以慢慢坐下來的椅子。</p>
-              <p>教育像一座小小的花園，我們做的，是陪伴每一種不同的生命，找到適合自己的光。</p>
+              <p>眾所皆知，他是上石國小最用心的金牌教練，總是帶領一屆一屆的學生從基本技巧、體能練起，最後登上舞台參加比賽，並且屢獲冠軍，是的，都是冠軍。
+</p>
+              <p>由於我自己也喜歡打籃球，參加過籃球隊，所以有一次我問了他，不擅長打球的孩子該怎麼辦，我心中期待聽到的是，他會如何嚴格要求訓練，如何用紀律來引發學生的極限。
+
+</p>
+              <p>沒想到，他溫柔地說了一句，「我會讓你體會進球的快樂」。他說，其實很多孩子不是不喜歡籃球，而是找不到成就感，所以他會一步一步耐心引導，直到讓孩子體會自己進球的快樂起，就會有持續的動力了。
+</p>
+              <p>當下聽到這段話非常感動，最初衷的一切，真的就是｢進球的快樂｣啊！我從金牌教練身上學到的，已經不是籃球，而是「如何當一位好老師了」。
+</p>
+<p>因為，任何學習，讓孩子體會成功的快樂，就能培養孩子追求成功的勇敢！
+</p>
+<p>上石石尚人物－－
+「我會讓你體會進球的快樂」的金牌教練</p>
             </div>
           </article>
 
           <article class="entry">
-            <h3>在教室裡，收藏一點點光</h3>
-            <p class="byline">示範老師二 <time>2026-11-12</time></p>
+            <h3>「敬請期待標題區」</h3>
+            <p class="byline">神秘上石人 <time>2026-11-12</time></p>
             <div class="article-body">
-              <p>每天走進教室，都會遇見新的風景。</p>
-              <p>可能是一句忽然說出口的勇敢，也可能是孩子把手伸向同伴的那一刻。那些細小的片段，像午後落在桌面的陽光，安靜地提醒我：我們正在一起長大。</p>
+              <p>敬請期待</p>
+             
             </div>
           </article>
 
           <article class="entry">
-            <h3>測試用文章</h3>
-            <p class="byline">示範老師三 <time>2026-11-12</time></p>
+            <h3>「敬請期待標題區」</h3>
+            <p class="byline">神秘上石人 <time>2026-11-12</time></p>
             <div class="article-body">
-              <p>每天走進教室，都會遇見新的風景。</p>
-              <p>可能是一句忽然說出口的勇敢，也可能是孩子把手伸向同伴的那一刻。那些細小的片段，像午後落在桌面的陽光，安靜地提醒我：我們正在一起長大。</p>
+             <p>敬請期待</p>
+
             </div>
           </article>
           <p class="empty">目前還沒有人物誌文章。</p>
@@ -440,6 +592,18 @@
     </section>
   </main>
 
+  <dialog class="projection" id="projection" aria-labelledby="projection-title">
+    <div class="projection-toolbar">
+      <span class="projection-label">上石石尚人物誌</span>
+      <form method="dialog">
+        <button class="projection-return" type="submit" autofocus>← 返回預覽</button>
+      </form>
+    </div>
+    <div class="projection-stage">
+      <div class="projection-content"></div>
+    </div>
+  </dialog>
+
   <script>
     const tabList = document.querySelector('[role="tablist"]');
     const tabs = [...tabList.querySelectorAll('[role="tab"]')];
@@ -506,6 +670,70 @@
       directory.append(...choices);
       selectProfile(profiles[0]);
       document.getElementById("profile-directory").hidden = false;
+    }
+
+
+    const projection = document.getElementById("projection");
+    const projectionStage = projection.querySelector(".projection-stage");
+    const projectionContent = projection.querySelector(".projection-content");
+
+    function fitProjection() {
+      if (!projection.open) return;
+
+      const stageStyle = getComputedStyle(projectionStage);
+      const availableHeight = projectionStage.clientHeight
+        - parseFloat(stageStyle.paddingTop) - parseFloat(stageStyle.paddingBottom);
+      const availableWidth = projectionStage.clientWidth
+        - parseFloat(stageStyle.paddingLeft) - parseFloat(stageStyle.paddingRight);
+
+      // Find the largest size that fits both dimensions to within a quarter pixel.
+      let minimum = 0;
+      let maximum = Math.max(0, availableHeight);
+      while (maximum - minimum > 0.25) {
+        const size = (minimum + maximum) / 2;
+        projectionContent.style.setProperty("--projection-size", size + "px");
+        const fits = projectionContent.getBoundingClientRect().height <= availableHeight
+          && projectionContent.scrollWidth <= Math.ceil(availableWidth);
+        if (fits) minimum = size;
+        else maximum = size;
+      }
+
+      projectionContent.style.setProperty("--projection-size", minimum + "px");
+    }
+
+    function openProjection(profile) {
+      const heading = profile.querySelector("h3").cloneNode(true);
+      heading.id = "projection-title";
+      heading.removeAttribute("tabindex");
+      projectionContent.replaceChildren(heading);
+
+      for (const part of profile.querySelectorAll(":scope > .byline, :scope > .article-body")) {
+        projectionContent.append(part.cloneNode(true));
+      }
+
+      projection.showModal();
+      fitProjection();
+      document.fonts.ready.then(fitProjection);
+    }
+
+    if (typeof projection.showModal === "function") {
+      new ResizeObserver(fitProjection).observe(projectionStage);
+      projectionContent.addEventListener("load", fitProjection, true);
+
+      for (const profile of profiles) {
+        const heading = profile.querySelector("h3");
+        const headingRow = document.createElement("div");
+        headingRow.className = "profile-heading-row";
+        heading.before(headingRow);
+
+        const launch = document.createElement("button");
+        launch.className = "projection-launch";
+        launch.type = "button";
+        launch.textContent = "⤢ 放大投影";
+        launch.setAttribute("aria-haspopup", "dialog");
+        launch.addEventListener("click", () => openProjection(profile));
+        headingRow.append(heading, launch);
+      }
     }
 
     const checkboxes = [...document.querySelectorAll('#people input[type="checkbox"]')];
